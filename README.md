@@ -1,2 +1,2 @@
-# unlocked
-AngularJS Unlocked
+# AngularJS [Unlocked]
+AngularJS [Unlocked] Code Examples
