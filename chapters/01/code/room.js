@@ -1,4 +1,4 @@
-var directives = angular.module('app.directives', []);
+var directives = angular.module('app.directives');
 directives.directive('room', room);
 
 /**
@@ -26,6 +26,6 @@ function room(){
      * the controller for a room
      */
     function roomCtrl() {
-        
+        // no logic needed in our room currently
     }
 }
