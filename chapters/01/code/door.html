@@ -1,0 +1,7 @@
+<div class="door {{door.material}}">
+  <div class="lock">
+    {{door.state.locked}}
+  </div>
+  <button ng-click="door.unlock(door.state)">Unlock</button>
+  <button ng-click="door.lock(door.state)">Lock</button>
+</div>
