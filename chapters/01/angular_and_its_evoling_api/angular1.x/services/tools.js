@@ -2,12 +2,11 @@ var services = angular.module('app.services', []);
 services.service('tools', tools);
 
 /**
- * the service contains and execution context that is shared
- * throughout  the life of the demoService executed context, which is 
+ * The service contains an execution context that is shared
+ * throughout the life of the tools execution context, which is 
  * the entire lifecycle of the app.
  **/
 function tools() {
-    
     this.unlock = unlock;
     this.lock = lock;
     
@@ -24,6 +23,4 @@ function tools() {
     function lock(obj) {
         obj.locked = true;
     }
-    
-    
 }

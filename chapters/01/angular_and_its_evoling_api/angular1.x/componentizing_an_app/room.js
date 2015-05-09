@@ -1,13 +1,12 @@
+// room.js
 var directives = angular.module('app.directives');
 directives.directive('room', room);
 
 /**
- * the directive that creats a room, which contains different types of 
- * objects. ie(doors, windows, rooms)
- * 
+ * The directive that creates a room, which contains different types of 
+ * objects. (i.e. doors, windows, rooms)
  */
-function room(){
-
+function room() {
 
     var roomBindObj = {
         doors: '='
@@ -23,7 +22,7 @@ function room(){
     }
     
     /**
-     * the controller for a room
+     * The controller for a room
      */
     function roomCtrl() {
         // no logic needed in our room currently

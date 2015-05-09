@@ -1,13 +1,11 @@
+// door.js
 var directives = angular.module('app.directives', []);
 directives.directive('door', door);
 
 /**
- * a directive that creates door object, which contains specific values related to a door.
- * 
- * @requires tools
+ * A directive that creates door object, which contains specific values related to a door.
  */
 function door(tools){
-
 
     var doorBindObj = {
         material: '='
