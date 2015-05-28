@@ -1,0 +1,32 @@
+<!doctype html>
+<html ng-app="unlockedApp">
+<head>
+    <title ng-bind="pageTitle || 'Argo Erp'"></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <base href="/">
+    <!-- generated dependent css files --> <% _.forEach(cssDependencies, function(file) { %> 
+    <link rel="stylesheet" href="/lib/<%= file %>?v=<%= pkg.version %>"></link>  <% }); %>
+    <link rel="stylesheet" href="/css/<%= pkg.name %>-<%= pkg.version %>.css">
+</head>
+<body ng-controller="indexCtrl as vm">
+    <!--[if lt IEd 10]>
+       <div class="alert"><h1> You are using and old version of Internet Explorer. It is suggested that you use Chrome, Safari, or Firefox.</h1></div>
+    <![endif]-->
+    <div id="main" class="content">
+        {{vm.hello}}
+        <button ng-click="vm.sayHello('hello world');"></button>
+    </div>
+</body>
+<footer>
+    <p class="logo">
+        <img class="logo" src="/images/logo.png">
+    </p>
+    <!-- generated dependent js files --> <% _.forEach(dependencies, function(file) { %> 
+    <script src="/dist/lib/<%= file %>?v=<%= pkg.version %>"></script>  <% }); %>
+
+    <!-- inject:js -->
+    <!-- endinject -->
+</footer>
+</html>
