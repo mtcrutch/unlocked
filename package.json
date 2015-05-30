@@ -49,6 +49,7 @@
     "gulp-sourcemaps": "1.5.x",
     "gulp-template": "3.0.x",
     "gulp-traceur": "^0.17.1",
+    "gulp-tslint": "^3.0.1-beta",
     "gulp-typescript": "^2.7.5",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "3.0.x",
@@ -65,6 +66,7 @@
     "systemjs": "^0.9.1",
     "traceur": "0.0.87",
     "traceur-runtime": "0.0.59",
+    "tslint": "^2.2.0-beta",
     "which": "~1",
     "zone.js": "0.5.0"
   }

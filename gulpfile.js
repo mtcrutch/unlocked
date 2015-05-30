@@ -14,21 +14,21 @@ var gulp = require("gulp"),
     minifyHtml = require("gulp-minify-html"),
     karma = require('karma').server,
     Dgeni = require('dgeni'),
-    traceur = require('gulp-traceur'),
+    ts = require('gulp-typescript'),
+    tslint = require('gulp-tslint'),
     del = require("del");
 
 // settings for gulpfile
 var MODULE_NAME =  "unlockedApp",
     SRC  = "app",
     SRC_LESS_BASE  = path.join(SRC, "."),
-    SRC_JAVASCRIPT_BASE  = path.join(SRC, "."),
+    SRC_TS_BASE  = path.join(SRC, "."),
     SRC_IMAGES_BASE  = path.join(SRC, "images"),
     SRC_ALL  = path.join(SRC, "**"),
     SRC_HTML  = path.join(SRC, ".", "**", "index.html"),
     SRC_TPL_HTML  = path.join(SRC, ".", "**", "*.tpl.html"),
     SRC_LESS_ALL  = path.join(SRC_LESS_BASE, "**", "*.less"),
-    SRC_JAVASCRIPT_ALL  = path.join(SRC_JAVASCRIPT_BASE, "**", "*.js"),
-    SRC_ES6_ALL  = path.join(SRC_JAVASCRIPT_BASE, "**", "*.es6.js"),
+    SRC_TS_ALL  = path.join(SRC_TS_BASE, "**", "*.ts"),
     SRC_JAVASCRIPT_SPEC_ALL  = path.join(path.join("tests","."), "**", "*.spec.js"),
     SRC_IMAGES_ALL  = path.join(SRC_IMAGES_BASE, "**", "*"),
     DIST = pkg.dist,
@@ -41,13 +41,12 @@ var MODULE_NAME =  "unlockedApp",
     MAIN_CSS = pkg.name + "-" + pkg.version + ".css",
     CUSTOM_BOOTSTRAP_CSS = "custom-bootstrap-" + pkg.name + "-" + pkg.version + ".css",
     CSSDEPENDENCIES = [],
-    DEPENDENCIES = ["angular.js", "router.es5.js", "index.js"],
+    DEPENDENCIES = ["angular.js", "router.es5.js"],
     KARMA = {
       browsers: ['PhantomJS'],
       dependencies: ["node_modules/angular/angular.js",
                      "node_modules/angular-mocks/angular-mocks.js",
-                     "node_modules/angular-new-router/dist/router.es5.js",
-                     "node_modules/traceur-runtime/index.js"],
+                     "node_modules/angular-new-router/dist/router.es5.js"],
       frameworks: ['jasmine']
     };
 
@@ -58,8 +57,8 @@ gulp.task("default", ["run"]);
 gulp.task("run", run);
 
 // Compile everything
-gulp.task("compile", ["copy-dependencies", "copy-vendor", "compile:less", 
-                      "jshint:javascript", "compile:javascript", "compile:html2js", "compile:images"]);
+gulp.task("compile", ["copy-dependencies", "copy-vendor", "compile:less", "lint:ts",
+                      "compile:javascript", "compile:html2js", "compile:images"]);
 
 
 // Dist everything
@@ -86,10 +85,7 @@ gulp.task('dgeni', function() {
   var dgeni = new Dgeni([require('./docs/dgeni')]);
   return dgeni.generate();
 });
-// jshind those scripts
-gulp.task("jshint:javascript", [], function() {
-  return jshintJavaScript();
-});
+gulp.task('lint:ts', [], lintTs);
 // compile those scripts
 gulp.task("compile:javascript", [], function() {
   return compileJavaScript()
@@ -175,19 +171,20 @@ function minJs() {
     .pipe(gulp.dest(DIST_JAVASCRIPT));
 }
 
-// Run JSHint on all of the app/js files and concatenate everything together
-function jshintJavaScript() {
-  var jshint = require("gulp-jshint");
-  return gulp.src(SRC_JAVASCRIPT_ALL)
-    .pipe(jshint())
-    .pipe(jshint.reporter(require('jshint-stylish')))
+// lint
+function lintTs() {
+  return gulp.src(SRC_TS_ALL)
+      .pipe(tslint('prose'));
 }
 
 // transpile all JS
 function compileJavaScript() {
-  return gulp.src(SRC_ES6_ALL)
+  return gulp.src(SRC_TS_ALL)
       .pipe(plumber())
-      .pipe(traceur({ blockBinding: true }))
+      .pipe(ts({
+        target: 'ES5', 
+        typescript: require('typescript')
+      }))
       .pipe(gulp.dest(DIST_JAVASCRIPT));
 }
 
