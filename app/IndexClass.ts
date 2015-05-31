@@ -4,7 +4,7 @@ module unlockedApp {
 
     class IndexController {
 
-        hello: String;
+        hello: string;
 
         constructor() {
             this.hello = 'world';

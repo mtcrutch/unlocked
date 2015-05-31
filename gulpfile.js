@@ -7,6 +7,7 @@ var gulp = require("gulp"),
     plumber = require("gulp-plumber"),
     pkg = require("./package.json"),
     inject = require('gulp-inject'),
+    angularFilesort = require('gulp-angular-filesort'),
     sourcemaps = require('gulp-sourcemaps'),
     ngHtml2Js = require("gulp-ng-html2js"),
     concat = require('gulp-concat-util'),
@@ -148,7 +149,7 @@ function compileHtml() {
     .pipe(template({pkg: pkg,
                     dependencies: DEPENDENCIES,
                     cssDependencies: CSSDEPENDENCIES}))
-    .pipe(inject(gulp.src(DIST_JAVASCRIPT + '/**/*.js'), {read: false}))
+    .pipe(inject(gulp.src(DIST_JAVASCRIPT + '/**/*.js').pipe(angularFilesort())))
     .pipe(gulp.dest(DIST));
 }
 
@@ -174,7 +175,10 @@ function minJs() {
 // lint
 function lintTs() {
   return gulp.src(SRC_TS_ALL)
-      .pipe(tslint('prose'));
+      .pipe(tslint())
+      .pipe(tslint.report('verbose', {
+          emitError: false
+      }));
 }
 
 // transpile all JS
