@@ -1,23 +1,11 @@
 // modules
 var gulp = require("gulp"),
     path = require("path"),
-    gutil = require("gulp-util"),
-    rename = require("gulp-rename"),
-    template = require("gulp-template"),
-    plumber = require("gulp-plumber"),
     pkg = require("./package.json"),
-    inject = require('gulp-inject'),
-    angularFilesort = require('gulp-angular-filesort'),
-    sourcemaps = require('gulp-sourcemaps'),
-    ngHtml2Js = require("gulp-ng-html2js"),
-    concat = require('gulp-concat-util'),
-    uglify = require("gulp-uglify"),
-    minifyHtml = require("gulp-minify-html"),
     karma = require('karma').server,
     Dgeni = require('dgeni'),
-    ts = require('gulp-typescript'),
-    tslint = require('gulp-tslint'),
-    del = require("del");
+    del = require("del"),
+    $ = require('gulp-load-plugins')();
 
 // settings for gulpfile
 var MODULE_NAME =  "unlockedApp",
@@ -63,7 +51,7 @@ gulp.task("compile", ["copy-dependencies", "copy-vendor", "compile:less", "lint:
 
 
 // Dist everything
-gulp.task("dist", ["copy-dependencies", "copy-vendor", "compile:html", "compile:less", 
+gulp.task("dist", ["copy-dependencies", "copy-vendor", "compile:html", "compile:less",
 	               "compile:javascript",  "compile:html2js", "compile:images"]);
 // Help
 gulp.task("help", help);
@@ -127,7 +115,7 @@ function run() {
 // compress images
 function compressImages() {
   return gulp.src(SRC_IMAGES_ALL)
-    .pipe(require("gulp-imagemin")({ optimizationLevel: 3, progressive: true, interlaced: true }))
+    .pipe($.imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
     .pipe(gulp.dest(DIST_IMAGES));
 }
 
@@ -146,10 +134,10 @@ function copyDependencies() {
 // compiles all html and interpolates values into the templates
 function compileHtml() {
   return gulp.src(SRC_HTML)
-    .pipe(template({pkg: pkg,
+    .pipe($.template({pkg: pkg,
                     dependencies: DEPENDENCIES,
                     cssDependencies: CSSDEPENDENCIES}))
-    .pipe(inject(gulp.src(DIST_JAVASCRIPT + '/**/*.js').pipe(angularFilesort())))
+    .pipe($.inject(gulp.src(DIST_JAVASCRIPT + '/**/*.js').pipe($.angularFilesort())))
     .pipe(gulp.dest(DIST));
 }
 
@@ -167,7 +155,7 @@ function compileImages() {
 
 function minJs() {
   return compileJavaScript()
-    .pipe(require('gulp-ngmin')()) // ngmin makes angular injection syntax compatible with uglify
+    .pipe($.ngmin()) // ngmin makes angular injection syntax compatible with uglify
     .pipe(uglify())
     .pipe(gulp.dest(DIST_JAVASCRIPT));
 }
@@ -175,18 +163,15 @@ function minJs() {
 // lint
 function lintTs() {
   return gulp.src(SRC_TS_ALL)
-      .pipe(tslint())
-      .pipe(tslint.report('verbose', {
-          emitError: false
-      }));
+      .pipe($.tslint('verbose'));
 }
 
 // transpile all JS
 function compileJavaScript() {
   return gulp.src(SRC_TS_ALL)
-      .pipe(plumber())
-      .pipe(ts({
-        target: 'ES5', 
+      .pipe($.plumber())
+      .pipe($.typescript({
+        target: 'ES5',
         typescript: require('typescript')
       }))
       .pipe(gulp.dest(DIST_JAVASCRIPT));
@@ -204,7 +189,7 @@ function server(next) {
 // minify CSS
 function minCss() {
   return compileLess()
-    .pipe(require('gulp-minify-css')())
+    .pipe($.minifyCss())
     .pipe(gulp.dest(DIST_LESS));
 }
 
@@ -225,43 +210,43 @@ function help (next) {
 
 // test application
 function testApp () {
-  karma.start({ 
+  karma.start({
     basePath: '.',
-    browsers: KARMA.browsers, 
+    browsers: KARMA.browsers,
     files: KARMA.dependencies.concat(DIST + "/js/*.js")
-                             .concat(SRC_JAVASCRIPT_SPEC_ALL), 
-    frameworks: KARMA.frameworks, 
-    singleRun: true 
-  }, function (exitCode) { 
-    gutil.log('Karma has exited with ' + exitCode); 
-    process.exit(exitCode); 
-  }); 
+                             .concat(SRC_JAVASCRIPT_SPEC_ALL),
+    frameworks: KARMA.frameworks,
+    singleRun: true
+  }, function (exitCode) {
+    gutil.log('Karma has exited with ' + exitCode);
+    process.exit(exitCode);
+  });
 
 }
 
 // Compile app/less sources in CSS and auto-prefix the CSS
 function compileLess() {
   return gulp.src(SRC_LESS_ALL)
-    .pipe(sourcemaps.init())
-    .pipe(require("gulp-less")({ paths: [ path.join(SRC_LESS_BASE) ] }))
-    .pipe(require("gulp-autoprefixer")("last 2 version", "safari 5", "ie 8", "ie 9", "opera 12.1", "ios 6", "android 4"))
-    .pipe(concat(MAIN_CSS))
-    .pipe(sourcemaps.write())
+    .pipe($.sourcemaps.init())
+    .pipe($.less({ paths: [ path.join(SRC_LESS_BASE) ] }))
+    .pipe($.autoprefixer("last 2 version", "safari 5", "ie 8", "ie 9", "opera 12.1", "ios 6", "android 4"))
+    .pipe($.concat(MAIN_CSS))
+    .pipe($.sourcemaps.write())
     .pipe(gulp.dest(DIST_LESS))
 }
 
 // create the js templates file
 function compileHTML2JS(){
   return gulp.src(SRC_TPL_HTML)
-    .pipe(minifyHtml({
+    .pipe($.minifyHtml({
         empty: true,
         spare: true,
         quotes: true
     }))
-    .pipe(ngHtml2Js({
+    .pipe($.ngHtml2js({
         moduleName: MODULE_NAME + '.templates',
         prefix: ""
     }))
-    .pipe(concat("partials.min.js"))
+    .pipe($.concat("partials.min.js"))
     .pipe(gulp.dest(DIST + '/js'));
 }

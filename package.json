@@ -38,6 +38,7 @@
     "gulp-jshint": "1.10.x",
     "gulp-less": "3.0.x",
     "gulp-livereload": "3.8.x",
+    "gulp-load-plugins": "^0.10.0",
     "gulp-minify-css": "1.1.x",
     "gulp-minify-html": "1.0.x",
     "gulp-modify": "0.0.5",
