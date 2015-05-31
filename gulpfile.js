@@ -18,13 +18,14 @@ var MODULE_NAME =  "unlockedApp",
     SRC_TPL_HTML  = path.join(SRC, ".", "**", "*.tpl.html"),
     SRC_LESS_ALL  = path.join(SRC_LESS_BASE, "**", "*.less"),
     SRC_TS_ALL  = path.join(SRC_TS_BASE, "**", "*.ts"),
-    SRC_JAVASCRIPT_SPEC_ALL  = path.join(path.join("tests","."), "**", "*.spec.js"),
+    SRC_TS_SPEC_ALL  = path.join('tests', "**", "*.ts"),
     SRC_IMAGES_ALL  = path.join(SRC_IMAGES_BASE, "**", "*"),
     DIST = pkg.dist,
     DIST_LIB = path.join(DIST, "lib"),
     DIST_ALL = path.join(DIST, "**"),
     DIST_LESS = path.join(DIST, "css"),
     DIST_JAVASCRIPT = path.join(DIST, "js"),
+    DIST_SPEC_JAVASCRIPT = path.join(DIST, "tests"),
     DIST_IMAGES = path.join(DIST, "images"),
     MAIN_SCRIPT = pkg.name + "-" + pkg.version + ".js",
     MAIN_CSS = pkg.name + "-" + pkg.version + ".css",
@@ -47,12 +48,12 @@ gulp.task("run", run);
 
 // Compile everything
 gulp.task("compile", ["copy-dependencies", "copy-vendor", "compile:less", "lint:ts",
-                      "compile:javascript", "compile:html2js", "compile:images"]);
+                      "compile:javascript", "compile:specs", "compile:html2js", "compile:images"]);
 
 
 // Dist everything
 gulp.task("dist", ["copy-dependencies", "copy-vendor", "compile:html", "compile:less",
-	               "compile:javascript",  "compile:html2js", "compile:images"]);
+	               "compile:javascript", "compile:specs", "compile:html2js", "compile:images"]);
 // Help
 gulp.task("help", help);
 // Prod Server
@@ -79,6 +80,11 @@ gulp.task('lint:ts', [], lintTs);
 gulp.task("compile:javascript", [], function() {
   return compileJavaScript()
       .on('end', compileHtml);
+});
+
+// compile those scripts
+gulp.task("compile:specs", [], function() {
+  return compileSpecs();
 });
 // turn html to scripts
 gulp.task("compile:html2js", [], function() {
@@ -172,9 +178,22 @@ function compileJavaScript() {
       .pipe($.plumber())
       .pipe($.typescript({
         target: 'ES5',
+        module: 'commonjs',
         typescript: require('typescript')
       }))
       .pipe(gulp.dest(DIST_JAVASCRIPT));
+}
+
+// compile all TS specs
+function compileSpecs() {
+  return gulp.src(SRC_TS_SPEC_ALL)
+      .pipe($.plumber())
+      .pipe($.typescript({
+        target: 'ES5',
+        module: 'commonjs',
+        typescript: require('typescript')
+      }))
+      .pipe(gulp.dest(DIST_SPEC_JAVASCRIPT));
 }
 
 // loads a dev server
@@ -213,8 +232,7 @@ function testApp () {
   karma.start({
     basePath: '.',
     browsers: KARMA.browsers,
-    files: KARMA.dependencies.concat(DIST + "/js/*.js")
-                             .concat(SRC_JAVASCRIPT_SPEC_ALL),
+    files: KARMA.dependencies.concat(DIST + "/js/*.js"),
     frameworks: KARMA.frameworks,
     singleRun: true
   }, function (exitCode) {
