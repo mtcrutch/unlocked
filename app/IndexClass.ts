@@ -1,20 +1,15 @@
-module unlockedApp {
+export class IndexController {
 
-    'use strict';
+    hello: string;
 
-    class IndexController {
-
-        hello: string;
-
-        constructor() {
-            this.hello = 'world';
-        }
-
-        sayHello(id) {
-            alert(id);
-        }
+    constructor() {
+        this.hello = 'world';
     }
 
-    angular.module('unlockedApp.controller', [])
-        .controller('IndexCtrl', IndexController);
+    sayHello(id) {
+        alert(id);
+    }
 }
+
+angular.module('unlockedApp')
+    .controller('IndexCtrl', IndexController);

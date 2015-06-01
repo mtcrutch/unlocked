@@ -19,7 +19,9 @@
     "angular-new-router": "0.5.x"
   },
   "devDependencies": {
+    "angular": "^1.4.0",
     "angular-mocks": "1.4.x",
+    "angular2": "^2.0.0-alpha.25",
     "connect": "3.3.x",
     "del": "1.1.x",
     "dgeni": "0.4.x",
@@ -60,6 +62,7 @@
     "karma-chrome-launcher": "0.1.x",
     "karma-jasmine": "0.3.x",
     "karma-phantomjs-launcher": "0.1.x",
+    "karma-source-map-support": "^1.0.0",
     "lodash": "3.8.x",
     "node-uuid": "1.4.x",
     "reflect-metadata": "0.1.0",

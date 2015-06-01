@@ -6,7 +6,7 @@
     <link rel="shortcut icon" type="image/png" href="/images/favicon.ico">
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <base href="/">
-    <!-- generated dependent css files --> <% _.forEach(cssDependencies, function(file) { %> 
+    <!-- generated dependent css files --> <% _.forEach(cssDependencies, function(file) { %>
     <link rel="stylesheet" href="/lib/<%= file %>?v=<%= pkg.version %>"></link>  <% }); %>
     <link rel="stylesheet" href="/css/<%= pkg.name %>-<%= pkg.version %>.css">
 </head>
@@ -23,7 +23,7 @@
     <p class="logo">
         <img class="logo" src="/images/logo.png">
     </p>
-    <!-- generated dependent js files --> <% _.forEach(dependencies, function(file) { %> 
+    <!-- generated dependent js files --> <% _.forEach(dependencies, function(file) { %>
     <script src="/dist/lib/<%= file %>?v=<%= pkg.version %>"></script>  <% }); %>
 
     <!-- inject:js -->

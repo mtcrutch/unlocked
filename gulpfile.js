@@ -31,12 +31,15 @@ var MODULE_NAME =  "unlockedApp",
     MAIN_CSS = pkg.name + "-" + pkg.version + ".css",
     CUSTOM_BOOTSTRAP_CSS = "custom-bootstrap-" + pkg.name + "-" + pkg.version + ".css",
     CSSDEPENDENCIES = [],
-    DEPENDENCIES = ["angular.js", "router.es5.js"],
+    DEPENDENCIES = ["angular.js", "router.es5.js", "system.src.js"],
     KARMA = {
+      cfg: __dirname + "/karma-config.js",
       browsers: ['PhantomJS'],
       dependencies: ["node_modules/angular/angular.js",
                      "node_modules/angular-mocks/angular-mocks.js",
-                     "node_modules/angular-new-router/dist/router.es5.js"],
+                     "node_modules/angular-new-router/dist/router.es5.js",
+                     "node_modules/systemjs/dist/system.src.js",
+                     "node_modules/es6-module-loader/dist/es6-module-loader.js"],
       frameworks: ['jasmine']
     };
 
@@ -76,15 +79,16 @@ gulp.task('dgeni', function() {
   return dgeni.generate();
 });
 gulp.task('lint:ts', [], lintTs);
-// compile those scripts
+// compile those TS scripts
 gulp.task("compile:javascript", [], function() {
-  return compileJavaScript()
+  return compileTS(SRC_TS_ALL, DIST_JAVASCRIPT)
       .on('end', compileHtml);
 });
 
-// compile those scripts
+// compile those TS spec scripts
 gulp.task("compile:specs", [], function() {
-  return compileSpecs();
+  return compileTS(SRC_TS_SPEC_ALL, DIST_SPEC_JAVASCRIPT)
+      .on('end', compileHtml);
 });
 // turn html to scripts
 gulp.task("compile:html2js", [], function() {
@@ -172,28 +176,22 @@ function lintTs() {
       .pipe($.tslint('verbose'));
 }
 
-// transpile all JS
-function compileJavaScript() {
-  return gulp.src(SRC_TS_ALL)
-      .pipe($.plumber())
-      .pipe($.typescript({
-        target: 'ES5',
-        module: 'commonjs',
-        typescript: require('typescript')
-      }))
-      .pipe(gulp.dest(DIST_JAVASCRIPT));
-}
-
 // compile all TS specs
-function compileSpecs() {
-  return gulp.src(SRC_TS_SPEC_ALL)
+function compileTS(inTs, outJs) {
+  return gulp.src(inTs)
       .pipe($.plumber())
+      .pipe($.sourcemaps.init())
       .pipe($.typescript({
         target: 'ES5',
-        module: 'commonjs',
+        module: 'system',
+        declaration: false,
+        noImplicitAny: false,
+        removeComments: true,
+        noLib: false,
         typescript: require('typescript')
       }))
-      .pipe(gulp.dest(DIST_SPEC_JAVASCRIPT));
+      .pipe($.sourcemaps.write('.'))
+      .pipe(gulp.dest(outJs));
 }
 
 // loads a dev server
@@ -202,7 +200,7 @@ function server(next) {
   var connect = require("connect");
   var server = connect();
   server.use(connect.static(DIST)).listen(port, next);
-  gutil.log("Server up and running: http://localhost:" + port);
+  $.util.log("Server up and running: http://localhost:" + port);
 }
 
 // minify CSS
@@ -214,29 +212,23 @@ function minCss() {
 
 // help prompt
 function help (next) {
-  gutil.log("--- " + pkg.name + " ---");
-  gutil.log("");
-  gutil.log("See all of the available tasks:");
-  gutil.log("$ gulp -T");
-  gutil.log("");
-  gutil.log("Run a dev mode server:");
-  gutil.log("$ gulp dev");
-  gutil.log("");
-  gutil.log("Run a prod mode server:");
-  gutil.log("$ gulp prod");
+  $.util.log("--- " + pkg.name + " ---");
+  $.util.log("");
+  $.util.log("See all of the available tasks:");
+  $.util.log("$ gulp -T");
+  $.util.log("");
+  $.util.log("Run a dev mode server:");
+  $.util.log("$ gulp dev");
+  $.util.log("");
+  $.util.log("Run a prod mode server:");
+  $.util.log("$ gulp prod");
   next();
 }
 
 // test application
 function testApp () {
-  karma.start({
-    basePath: '.',
-    browsers: KARMA.browsers,
-    files: KARMA.dependencies.concat(DIST + "/js/*.js"),
-    frameworks: KARMA.frameworks,
-    singleRun: true
-  }, function (exitCode) {
-    gutil.log('Karma has exited with ' + exitCode);
+  karma.start({configFile: KARMA.cfg}, function (exitCode) {
+    $.util.log('Karma has exited with ' + exitCode);
     process.exit(exitCode);
   });
 
