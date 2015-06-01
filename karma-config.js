@@ -13,7 +13,7 @@ module.exports = function(config) {
       // 'node_modules/zone.js/dist/zone-microtask.js',
       // 'node_modules/zone.js/dist/long-stack-trace-zone.js',
 
-      // 'node_modules/traceur/bin/traceur-runtime.js',
+      'node_modules/traceur/bin/traceur-runtime.js',
       'node_modules/es6-module-loader/dist/es6-module-loader-sans-promises.src.js',
       // Including systemjs because it defines `__eval`, which produces correct stack traces.
       'node_modules/systemjs/dist/system.src.js',
