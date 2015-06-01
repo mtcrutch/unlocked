@@ -71,6 +71,7 @@
     "systemjs": "^0.9.1",
     "traceur": "0.0.87",
     "traceur-runtime": "0.0.59",
+    "typescript": "alexeagle/TypeScript#error_is_class",
     "tslint": "^2.2.0-beta",
     "which": "~1",
     "zone.js": "0.5.0"
