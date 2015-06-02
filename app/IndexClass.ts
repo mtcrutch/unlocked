@@ -3,6 +3,7 @@ export class IndexController {
     hello: string;
 
     constructor() {
+        console.log('hahaha hahahhahahh')
         this.hello = 'world';
     }
 

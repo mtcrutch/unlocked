@@ -6,6 +6,7 @@
 
     System.import('js/IndexClass').then(
         function() {
+            console.log('hahaha hahahah')
             angular.bootstrap(document, ['unlockedApp']);
         },
         function(a, b, c) {

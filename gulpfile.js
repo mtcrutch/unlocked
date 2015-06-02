@@ -227,6 +227,7 @@ function help (next) {
 
 // test application
 function testApp () {
+    console.log(KARMA.cfg)
   karma.start({configFile: KARMA.cfg}, function (exitCode) {
     $.util.log('Karma has exited with ' + exitCode);
     process.exit(exitCode);
