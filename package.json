@@ -15,7 +15,7 @@
   "dist": "dist",
   "scripts": {},
   "dependencies": {
-    "angular": "1.4.x",
+    "angular": "1.6.7",
     "angular-new-router": "0.5.x"
   },
   "devDependencies": {
